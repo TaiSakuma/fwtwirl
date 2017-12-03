@@ -85,6 +85,7 @@ class FrameworkHeppy(object):
 
         component_readers = alphatwirl.heppyresult.ComponentReaderComposite()
 
+
         # tbl_heppyresult.txt
         tbl_heppyresult_path = os.path.join(self.outdir, 'tbl_heppyresult.txt')
         if self.force or not os.path.exists(tbl_heppyresult_path):
@@ -95,6 +96,56 @@ class FrameworkHeppy(object):
             f.write('heppyresult\n')
             f.write(heppydir_rel + '\n')
             f.close()
+
+        # tbl_tree.txt
+        tbl_tree_path = os.path.join(self.outdir, 'tbl_tree.txt')
+        if self.force or not os.path.exists(tbl_tree_path):
+            tblTree = alphatwirl.heppyresult.TblTree(
+                analyzerName = analyzerName,
+                fileName = fileName,
+                treeName = treeName,
+                outPath = tbl_tree_path,
+            )
+            component_readers.add(tblTree)
+
+        # tbl_branch.txt
+        tbl_branch_path = os.path.join(self.outdir, 'tbl_branch.txt')
+        if self.force or not os.path.exists(tbl_branch_path):
+            tblBranch = alphatwirl.heppyresult.TblBranch(
+                analyzerName = analyzerName,
+                fileName = fileName,
+                treeName = treeName,
+                outPath = tbl_branch_path,
+            )
+            component_readers.add(tblBranch)
+
+        # tbl_branch_size.tx
+        tbl_branch_size_path = os.path.join(self.outdir, 'tbl_branch_size.txt')
+        if self.force or not os.path.exists(tbl_branch_size_path):
+            tblBranchSize = alphatwirl.heppyresult.TblBranch(
+                analyzerName = analyzerName,
+                fileName = fileName,
+                treeName = treeName,
+                outPath = tbl_branch_size_path,
+                addType = False,
+                addSize = True,
+                sortBySize = True,
+            )
+            component_readers.add(tblBranchSize)
+
+        # tbl_branch_title.txt
+        tbl_branch_title_path = os.path.join(self.outdir, 'tbl_branch_title.txt')
+        if self.force or not os.path.exists(tbl_branch_title_path):
+            tblBranchTitle = alphatwirl.heppyresult.TblBranch(
+                analyzerName = analyzerName,
+                fileName = fileName,
+                treeName = treeName,
+                outPath = tbl_branch_title_path,
+                addType = False,
+                addSize = False,
+                addTitle = True,
+            )
+            component_readers.add(tblBranchTitle)
 
         # tbl_dataset.txt
         tbl_dataset_path = os.path.join(self.outdir, 'tbl_dataset.txt')
