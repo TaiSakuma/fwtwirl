@@ -10,7 +10,7 @@ class Parallel(object):
         self.communicationChannel = communicationChannel
 
     def __repr__(self):
-        return '{}(progressMonitor = {!r}, communicationChannel = {!r}'.format(
+        return '{}(progressMonitor={!r}, communicationChannel={!r}'.format(
             self.__class__.__name__,
             self.progressMonitor,
             self.communicationChannel
@@ -25,16 +25,16 @@ class Parallel(object):
         self.communicationChannel.end()
 
 ##__________________________________________________________________||
-def build_parallel(parallel_mode, quiet = True, processes = 4, user_modules = [ ], htcondor_job_desc_extra = [ ]):
+def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ], htcondor_job_desc_extra=[ ]):
 
     default_parallel_mode = 'multiprocessing'
 
     if parallel_mode in ('subprocess', 'htcondor'):
         return build_parallel_dropbox(
-            parallel_mode = parallel_mode,
-            quiet = quiet,
-            user_modules = user_modules,
-            htcondor_job_desc_extra = htcondor_job_desc_extra
+            parallel_mode=parallel_mode,
+            quiet=quiet,
+            user_modules=user_modules,
+            htcondor_job_desc_extra=htcondor_job_desc_extra
         )
 
     if not parallel_mode == default_parallel_mode:
@@ -43,10 +43,10 @@ def build_parallel(parallel_mode, quiet = True, processes = 4, user_modules = [ 
             parallel_mode, default_parallel_mode
         ))
 
-    return build_parallel_multiprocessing(quiet = quiet, processes = processes)
+    return build_parallel_multiprocessing(quiet=quiet, processes=processes)
 
 ##__________________________________________________________________||
-def build_parallel_dropbox(parallel_mode, quiet, user_modules, htcondor_job_desc_extra = [ ]):
+def build_parallel_dropbox(parallel_mode, quiet, user_modules, htcondor_job_desc_extra=[ ]):
     tmpdir = '_ccsp_temp'
     user_modules = set(user_modules)
     user_modules.add('fwtwirl')
@@ -54,25 +54,25 @@ def build_parallel_dropbox(parallel_mode, quiet, user_modules, htcondor_job_desc
     alphatwirl.mkdir_p(tmpdir)
     progressMonitor = alphatwirl.progressbar.NullProgressMonitor()
     if parallel_mode == 'htcondor':
-        dispatcher = alphatwirl.concurrently.HTCondorJobSubmitter(job_desc_extra = htcondor_job_desc_extra)
+        dispatcher = alphatwirl.concurrently.HTCondorJobSubmitter(job_desc_extra=htcondor_job_desc_extra)
     else:
         dispatcher = alphatwirl.concurrently.SubprocessRunner()
     workingArea = alphatwirl.concurrently.WorkingArea(
-        dir = tmpdir,
-        python_modules = list(user_modules)
+        dir=tmpdir,
+        python_modules=list(user_modules)
     )
     dropbox = alphatwirl.concurrently.TaskPackageDropbox(
-        workingArea = workingArea,
-        dispatcher = dispatcher
+        workingArea=workingArea,
+        dispatcher=dispatcher
     )
     communicationChannel = alphatwirl.concurrently.CommunicationChannel(
-        dropbox = dropbox
+        dropbox=dropbox
     )
     return Parallel(progressMonitor, communicationChannel)
 
 ##__________________________________________________________________||
 def build_parallel_multiprocessing(quiet, processes):
-    progressMonitor, communicationChannel = alphatwirl.configure.build_progressMonitor_communicationChannel(quiet = quiet, processes = processes)
+    progressMonitor, communicationChannel = alphatwirl.configure.build_progressMonitor_communicationChannel(quiet=quiet, processes=processes)
     return Parallel(progressMonitor, communicationChannel)
 
 ##__________________________________________________________________||
