@@ -36,21 +36,21 @@ class FrameworkHeppy(object):
 
     """
     def __init__(self, outdir, heppydir,
-                 datamc = 'mc',
-                 force = False, quiet = False,
-                 parallel_mode = 'multiprocessing',
-                 htcondor_job_desc_extra = [ ],
-                 process = 8,
-                 user_modules = (),
-                 max_events_per_dataset = -1, max_events_per_process = -1,
-                 profile = False, profile_out_path = None
+                 datamc='mc',
+                 force=False, quiet=False,
+                 parallel_mode='multiprocessing',
+                 htcondor_job_desc_extra=[ ],
+                 process=8,
+                 user_modules=(),
+                 max_events_per_dataset=-1, max_events_per_process=-1,
+                 profile=False, profile_out_path=None
     ):
         self.parallel = build_parallel(
-            parallel_mode = parallel_mode,
-            quiet = quiet,
-            processes = process,
-            user_modules = user_modules,
-            htcondor_job_desc_extra = htcondor_job_desc_extra
+            parallel_mode=parallel_mode,
+            quiet=quiet,
+            processes=process,
+            user_modules=user_modules,
+            htcondor_job_desc_extra=htcondor_job_desc_extra
         )
         self.outdir = outdir
         self.heppydir = heppydir
@@ -63,9 +63,9 @@ class FrameworkHeppy(object):
 
     def run(self, components,
             reader_collector_pairs,
-            analyzerName = 'roctree',
-            fileName = 'tree.root',
-            treeName = 'tree'
+            analyzerName='roctree',
+            fileName='tree.root',
+            treeName='tree'
     ):
 
         self._begin()
@@ -101,10 +101,10 @@ class FrameworkHeppy(object):
         tbl_tree_path = os.path.join(self.outdir, 'tbl_tree.txt')
         if self.force or not os.path.exists(tbl_tree_path):
             tblTree = alphatwirl.heppyresult.TblTree(
-                analyzerName = analyzerName,
-                fileName = fileName,
-                treeName = treeName,
-                outPath = tbl_tree_path,
+                analyzerName=analyzerName,
+                fileName=fileName,
+                treeName=treeName,
+                outPath=tbl_tree_path,
             )
             component_readers.add(tblTree)
 
@@ -112,10 +112,10 @@ class FrameworkHeppy(object):
         tbl_branch_path = os.path.join(self.outdir, 'tbl_branch.txt')
         if self.force or not os.path.exists(tbl_branch_path):
             tblBranch = alphatwirl.heppyresult.TblBranch(
-                analyzerName = analyzerName,
-                fileName = fileName,
-                treeName = treeName,
-                outPath = tbl_branch_path,
+                analyzerName=analyzerName,
+                fileName=fileName,
+                treeName=treeName,
+                outPath=tbl_branch_path,
             )
             component_readers.add(tblBranch)
 
@@ -123,13 +123,13 @@ class FrameworkHeppy(object):
         tbl_branch_size_path = os.path.join(self.outdir, 'tbl_branch_size.txt')
         if self.force or not os.path.exists(tbl_branch_size_path):
             tblBranchSize = alphatwirl.heppyresult.TblBranch(
-                analyzerName = analyzerName,
-                fileName = fileName,
-                treeName = treeName,
-                outPath = tbl_branch_size_path,
-                addType = False,
-                addSize = True,
-                sortBySize = True,
+                analyzerName=analyzerName,
+                fileName=fileName,
+                treeName=treeName,
+                outPath=tbl_branch_size_path,
+                addType=False,
+                addSize=True,
+                sortBySize=True,
             )
             component_readers.add(tblBranchSize)
 
@@ -137,13 +137,13 @@ class FrameworkHeppy(object):
         tbl_branch_title_path = os.path.join(self.outdir, 'tbl_branch_title.txt')
         if self.force or not os.path.exists(tbl_branch_title_path):
             tblBranchTitle = alphatwirl.heppyresult.TblBranch(
-                analyzerName = analyzerName,
-                fileName = fileName,
-                treeName = treeName,
-                outPath = tbl_branch_title_path,
-                addType = False,
-                addSize = False,
-                addTitle = True,
+                analyzerName=analyzerName,
+                fileName=fileName,
+                treeName=treeName,
+                outPath=tbl_branch_title_path,
+                addType=False,
+                addSize=False,
+                addTitle=True,
             )
             component_readers.add(tblBranchTitle)
 
@@ -151,9 +151,9 @@ class FrameworkHeppy(object):
         tbl_dataset_path = os.path.join(self.outdir, 'tbl_dataset.txt')
         if self.force or not os.path.exists(tbl_dataset_path):
             tblDataset = alphatwirl.heppyresult.TblComponentConfig(
-                outPath = tbl_dataset_path,
-                columnNames = ('dataset', ),
-                keys = ('dataset', ),
+                outPath=tbl_dataset_path,
+                columnNames=('dataset', ),
+                keys=('dataset', ),
             )
             component_readers.add(tblDataset)
 
@@ -162,9 +162,9 @@ class FrameworkHeppy(object):
             tbl_xsec_path = os.path.join(self.outdir, 'tbl_xsec.txt')
             if self.force or not os.path.exists(tbl_xsec_path):
                 tblXsec = alphatwirl.heppyresult.TblComponentConfig(
-                    outPath = tbl_xsec_path,
-                    columnNames = ('xsec', ),
-                    keys = ('xSection', ),
+                    outPath=tbl_xsec_path,
+                    columnNames=('xsec', ),
+                    keys=('xSection', ),
                 )
                 component_readers.add(tblXsec)
 
@@ -173,11 +173,11 @@ class FrameworkHeppy(object):
             tbl_nevt_path = os.path.join(self.outdir, 'tbl_nevt.txt')
             if self.force or not os.path.exists(tbl_nevt_path):
                 tblNevt = alphatwirl.heppyresult.TblCounter(
-                    outPath = tbl_nevt_path,
-                    columnNames = ('nevt', 'nevt_sumw'),
-                    analyzerName = 'skimAnalyzerCount',
-                    fileName = 'SkimReport.txt',
-                    levels = ('All Events', 'Sum Weights')
+                    outPath=tbl_nevt_path,
+                    columnNames=('nevt', 'nevt_sumw'),
+                    analyzerName='skimAnalyzerCount',
+                    fileName='SkimReport.txt',
+                    levels=('All Events', 'Sum Weights')
                 )
                 component_readers.add(tblNevt)
 
@@ -189,29 +189,29 @@ class FrameworkHeppy(object):
             collector.add(c)
         eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(self.parallel.communicationChannel)
         eventBuilderConfigMaker = alphatwirl.heppyresult.EventBuilderConfigMaker(
-            analyzerName = analyzerName,
-            fileName = fileName,
-            treeName = treeName,
+            analyzerName=analyzerName,
+            fileName=fileName,
+            treeName=treeName,
         )
         datasetIntoEventBuildersSplitter = alphatwirl.loop.DatasetIntoEventBuildersSplitter(
-            EventBuilder = alphatwirl.heppyresult.EventBuilder,
-            eventBuilderConfigMaker = eventBuilderConfigMaker,
-            maxEvents = self.max_events_per_dataset,
-            maxEventsPerRun = self.max_events_per_process
+            EventBuilder=alphatwirl.heppyresult.EventBuilder,
+            eventBuilderConfigMaker=eventBuilderConfigMaker,
+            maxEvents=self.max_events_per_dataset,
+            maxEventsPerRun=self.max_events_per_process
         )
         eventReader = alphatwirl.loop.EventsInDatasetReader(
-            eventLoopRunner = eventLoopRunner,
-            reader = reader,
-            collector = collector,
-            split_into_build_events = datasetIntoEventBuildersSplitter
+            eventLoopRunner=eventLoopRunner,
+            reader=reader,
+            collector=collector,
+            split_into_build_events=datasetIntoEventBuildersSplitter
         )
         component_readers.add(eventReader)
 
         if components == ['all']: components = None
         heppyResult = alphatwirl.heppyresult.HeppyResult(
-            path = self.heppydir,
-            componentNames = components,
-            componentHasTheseFiles = [analyzerName]
+            path=self.heppydir,
+            componentNames=components,
+            componentHasTheseFiles=[analyzerName]
         )
         componentLoop = alphatwirl.heppyresult.ComponentLoop(heppyResult, component_readers)
 
@@ -221,7 +221,7 @@ class FrameworkHeppy(object):
         if not self.profile:
             componentLoop()
         else:
-            profile_func(func = componentLoop, profile_out_path = self.profile_out_path)
+            profile_func(func=componentLoop, profile_out_path=self.profile_out_path)
 
     def _end(self):
         self.parallel.end()
