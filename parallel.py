@@ -25,7 +25,9 @@ class Parallel(object):
         self.communicationChannel.end()
 
 ##__________________________________________________________________||
-def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ], htcondor_job_desc_extra=[ ]):
+def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ],
+                   htcondor_job_desc_extra=[ ],
+                   terminate_dispatcher_at_close=True):
 
     default_parallel_mode = 'multiprocessing'
 
@@ -46,7 +48,9 @@ def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ], htc
     return build_parallel_multiprocessing(quiet=quiet, processes=processes)
 
 ##__________________________________________________________________||
-def build_parallel_dropbox(parallel_mode, quiet, user_modules, htcondor_job_desc_extra=[ ]):
+def build_parallel_dropbox(parallel_mode, quiet, user_modules,
+                           htcondor_job_desc_extra=[ ],
+                           terminate_dispatcher_at_close=True):
     tmpdir = '_ccsp_temp'
     user_modules = set(user_modules)
     user_modules.add('fwtwirl')
@@ -63,7 +67,8 @@ def build_parallel_dropbox(parallel_mode, quiet, user_modules, htcondor_job_desc
     )
     dropbox = alphatwirl.concurrently.TaskPackageDropbox(
         workingArea=workingArea,
-        dispatcher=dispatcher
+        dispatcher=dispatcher,
+        terminate_dispatcher_at_close=terminate_dispatcher_at_close
     )
     communicationChannel = alphatwirl.concurrently.CommunicationChannel(
         dropbox=dropbox
