@@ -1,5 +1,7 @@
 # Tai Sakuma <tai.sakuma@cern.ch>
-import os, sys
+import os
+import sys
+import logging
 
 import alphatwirl
 
@@ -38,8 +40,13 @@ class FrameworkDelphes(object):
 
     def run(self, datasets, reader_collector_pairs):
         self._begin()
-        loop = self._configure(datasets, reader_collector_pairs)
-        self._run(loop)
+        try:
+            loop = self._configure(datasets, reader_collector_pairs)
+            self._run(loop)
+        except KeyboardInterrupt:
+            logger = logging.getLogger(__name__)
+            logger.warning('received KeyboardInterrupt')
+            pass
         self._end()
 
     def _begin(self):
