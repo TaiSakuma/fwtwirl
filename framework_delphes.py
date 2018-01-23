@@ -11,25 +11,25 @@ from profile_func import profile_func
 ##__________________________________________________________________||
 class FrameworkDelphes(object):
     def __init__(self,
-                 quiet = False,
-                 parallel_mode = 'multiprocessing',
-                 htcondor_job_desc_extra = [ ],
-                 process = 8,
-                 user_modules = (),
-                 max_events_per_dataset = -1,
-                 max_events_per_process = -1,
-                 max_files_per_dataset = -1,
-                 max_files_per_process = 1,
-                 profile = False,
-                 profile_out_path = None
+                 quiet=False,
+                 parallel_mode='multiprocessing',
+                 htcondor_job_desc_extra=[ ],
+                 process=8,
+                 user_modules=(),
+                 max_events_per_dataset=-1,
+                 max_events_per_process=-1,
+                 max_files_per_dataset=-1,
+                 max_files_per_process=1,
+                 profile=False,
+                 profile_out_path=None
     ):
         user_modules = set(user_modules)
         self.parallel = build_parallel(
-            parallel_mode = parallel_mode,
-            quiet = quiet,
-            processes = process,
-            user_modules = user_modules,
-            htcondor_job_desc_extra = htcondor_job_desc_extra,
+            parallel_mode=parallel_mode,
+            quiet=quiet,
+            processes=process,
+            user_modules=user_modules,
+            htcondor_job_desc_extra=htcondor_job_desc_extra,
         )
         self.max_events_per_dataset = max_events_per_dataset
         self.max_events_per_process = max_events_per_process
@@ -61,27 +61,27 @@ class FrameworkDelphes(object):
         eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(self.parallel.communicationChannel)
         eventBuilderConfigMaker = alphatwirl.delphes.EventBuilderConfigMaker()
         datasetIntoEventBuildersSplitter = alphatwirl.loop.DatasetIntoEventBuildersSplitter(
-            EventBuilder = alphatwirl.delphes.DelphesEventBuilder,
-            eventBuilderConfigMaker = eventBuilderConfigMaker,
-            maxEvents = self.max_events_per_dataset,
-            maxEventsPerRun = self.max_events_per_process,
-            maxFiles = self.max_files_per_dataset,
-            maxFilesPerRun = self.max_files_per_process
+            EventBuilder=alphatwirl.delphes.DelphesEventBuilder,
+            eventBuilderConfigMaker=eventBuilderConfigMaker,
+            maxEvents=self.max_events_per_dataset,
+            maxEventsPerRun=self.max_events_per_process,
+            maxFiles=self.max_files_per_dataset,
+            maxFilesPerRun=self.max_files_per_process
         )
         eventReader = alphatwirl.loop.EventsInDatasetReader(
-            eventLoopRunner = eventLoopRunner,
-            reader = reader_top,
-            collector = collector_top,
-            split_into_build_events = datasetIntoEventBuildersSplitter
+            eventLoopRunner=eventLoopRunner,
+            reader=reader_top,
+            collector=collector_top,
+            split_into_build_events=datasetIntoEventBuildersSplitter
         )
-        loop = DatasetLoop(datasets = datasets, reader = eventReader)
+        loop = DatasetLoop(datasets=datasets, reader=eventReader)
         return loop
 
     def _run(self, loop):
         if not self.profile:
             loop()
         else:
-            profile_func(func = loop, profile_out_path = self.profile_out_path)
+            profile_func(func=loop, profile_out_path=self.profile_out_path)
 
     def _end(self):
         self.parallel.end()
