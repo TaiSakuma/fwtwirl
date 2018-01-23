@@ -43,14 +43,16 @@ class FrameworkHeppy(object):
                  process=8,
                  user_modules=(),
                  max_events_per_dataset=-1, max_events_per_process=-1,
-                 profile=False, profile_out_path=None
+                 profile=False, profile_out_path=None,
+                 keep_jobs_running_at_keyboardinterrupt=True
     ):
         self.parallel = build_parallel(
             parallel_mode=parallel_mode,
             quiet=quiet,
             processes=process,
             user_modules=user_modules,
-            htcondor_job_desc_extra=htcondor_job_desc_extra
+            htcondor_job_desc_extra=htcondor_job_desc_extra,
+            terminate_dispatcher_at_close=keep_jobs_running_at_keyboardinterrupt
         )
         self.outdir = outdir
         self.heppydir = heppydir
