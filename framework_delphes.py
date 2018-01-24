@@ -3,8 +3,26 @@ import os
 import sys
 import logging
 
+import gzip
+
+try:
+   import cPickle as pickle
+except:
+   import pickle
+
 import alphatwirl
 
+from .yes_no import query_yes_no
+
+##__________________________________________________________________||
+import logging
+logger = logging.getLogger(__name__)
+log_handler = logging.StreamHandler(stream=sys.stdout)
+log_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+log_handler.setFormatter(log_formatter)
+logger.addHandler(log_handler)
+
+##__________________________________________________________________||
 from parallel import build_parallel
 from profile_func import profile_func
 
@@ -21,8 +39,7 @@ class FrameworkDelphes(object):
                  max_files_per_dataset=-1,
                  max_files_per_process=1,
                  profile=False,
-                 profile_out_path=None,
-                 keep_jobs_running_at_keyboardinterrupt=True
+                 profile_out_path=None
     ):
         user_modules = set(user_modules)
         self.parallel = build_parallel(
@@ -30,8 +47,7 @@ class FrameworkDelphes(object):
             quiet=quiet,
             processes=process,
             user_modules=user_modules,
-            htcondor_job_desc_extra=htcondor_job_desc_extra,
-            terminate_dispatcher_at_close=keep_jobs_running_at_keyboardinterrupt
+            htcondor_job_desc_extra=htcondor_job_desc_extra
         )
         self.max_events_per_dataset = max_events_per_dataset
         self.max_events_per_process = max_events_per_process
@@ -39,20 +55,22 @@ class FrameworkDelphes(object):
         self.max_files_per_process = max_files_per_process
         self.profile = profile
         self.profile_out_path = profile_out_path
+        self.parallel_mode = parallel_mode
 
     def run(self, datasets, reader_collector_pairs):
-        self._begin()
+        self.parallel.begin()
         try:
             loop = self._configure(datasets, reader_collector_pairs)
             self._run(loop)
         except KeyboardInterrupt:
             logger = logging.getLogger(__name__)
             logger.warning('received KeyboardInterrupt')
-            pass
-        self._end()
-
-    def _begin(self):
-        self.parallel.begin()
+            if query_yes_no('terminate running jobs'):
+               logger.warning('terminating running jobs')
+               self.parallel.terminate()
+            else:
+               logger.warning('not terminating running jobs')
+        self.parallel.end()
 
     def _configure(self, datasets, reader_collector_pairs):
         reader_top = alphatwirl.loop.ReaderComposite()
@@ -76,7 +94,15 @@ class FrameworkDelphes(object):
             collector=collector_top,
             split_into_build_events=datasetIntoEventBuildersSplitter
         )
-        loop = DatasetLoop(datasets=datasets, reader=eventReader)
+
+        if self.parallel_mode in ('subprocess', 'htcondor'):
+            loop = ResumableDatasetLoop(
+                datasets=datasets, reader=eventReader,
+                workingarea=self.parallel.workingarea
+            )
+        else:
+            loop = DatasetLoop(datasets=datasets, reader=eventReader)
+
         return loop
 
     def _run(self, loop):
@@ -84,9 +110,6 @@ class FrameworkDelphes(object):
             loop()
         else:
             profile_func(func=loop, profile_out_path=self.profile_out_path)
-
-    def _end(self):
-        self.parallel.end()
 
 ##__________________________________________________________________||
 class DatasetLoop(object):
@@ -99,6 +122,25 @@ class DatasetLoop(object):
         self.reader.begin()
         for dataset in self.datasets:
             self.reader.read(dataset)
+        return self.reader.end()
+
+##__________________________________________________________________||
+class ResumableDatasetLoop(object):
+
+    def __init__(self, datasets, reader, workingarea):
+        self.datasets = datasets
+        self.reader = reader
+        self.workingarea = workingarea
+
+    def __call__(self):
+        self.reader.begin()
+        for dataset in self.datasets:
+            self.reader.read(dataset)
+
+        path = os.path.join(self.workingarea.path, 'reader.p.gz')
+        with gzip.open(path, 'wb') as f:
+            pickle.dump(self.reader, f, protocol=pickle.HIGHEST_PROTOCOL)
+
         return self.reader.end()
 
 ##__________________________________________________________________||
