@@ -12,7 +12,7 @@ except NameError:
 #
 def query_yes_no(question, default=True):
     """Ask a yes/no question and return True/False. If keyboard interrupts
-    three times, return None
+    three times, return default
 
     "question" is a string that is presented to the user.
     "default" is the presumed answer if the user just hits <Enter>.
@@ -42,9 +42,8 @@ def query_yes_no(question, default=True):
         except KeyboardInterrupt:
             ninterrupt += 1
             if ninterrupt >= 3:
-                return None
+                return default
             sys.stdout.write('\n')
-            pass
 
 ##__________________________________________________________________||
 if __name__ == '__main__':
