@@ -21,14 +21,16 @@ class Parallel(object):
         self.progressMonitor.begin()
         self.communicationChannel.begin()
 
+    def terminate(self):
+        self.communicationChannel.terminate()
+
     def end(self):
         self.progressMonitor.end()
         self.communicationChannel.end()
 
 ##__________________________________________________________________||
 def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ],
-                   htcondor_job_desc_extra=[ ],
-                   terminate_dispatcher_at_close=True):
+                   htcondor_job_desc_extra=[ ]):
 
     default_parallel_mode = 'multiprocessing'
 
@@ -37,8 +39,7 @@ def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ],
             parallel_mode=parallel_mode,
             quiet=quiet,
             user_modules=user_modules,
-            htcondor_job_desc_extra=htcondor_job_desc_extra,
-            terminate_dispatcher_at_close=terminate_dispatcher_at_close
+            htcondor_job_desc_extra=htcondor_job_desc_extra
         )
 
     if not parallel_mode == default_parallel_mode:
@@ -51,8 +52,7 @@ def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ],
 
 ##__________________________________________________________________||
 def build_parallel_dropbox(parallel_mode, quiet, user_modules,
-                           htcondor_job_desc_extra=[ ],
-                           terminate_dispatcher_at_close=True):
+                           htcondor_job_desc_extra=[ ]):
     tmpdir = '_ccsp_temp'
     user_modules = set(user_modules)
     user_modules.add('fwtwirl')
@@ -69,8 +69,7 @@ def build_parallel_dropbox(parallel_mode, quiet, user_modules,
     )
     dropbox = alphatwirl.concurrently.TaskPackageDropbox(
         workingArea=workingarea,
-        dispatcher=dispatcher,
-        terminate_dispatcher_at_close=terminate_dispatcher_at_close
+        dispatcher=dispatcher
     )
     communicationChannel = alphatwirl.concurrently.CommunicationChannel(
         dropbox=dropbox
