@@ -61,5 +61,15 @@ def setup(cwd, workingarea_path):
     os.chdir(cwd)
 
 ##__________________________________________________________________||
+# http://stackoverflow.com/questions/33223564/atomically-creating-a-file-if-it-doesnt-exist-in-python
+def try_make_file(filename):
+    try:
+        os.open(filename,  os.O_CREAT | os.O_EXCL)
+        return True
+    except OSError:
+        # FileExistsError can be used for Python 3
+        return False
+
+##__________________________________________________________________||
 if __name__ == '__main__':
     main()
