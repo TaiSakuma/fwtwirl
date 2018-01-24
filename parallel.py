@@ -5,9 +5,10 @@ import alphatwirl
 
 ##__________________________________________________________________||
 class Parallel(object):
-    def __init__(self, progressMonitor, communicationChannel):
+    def __init__(self, progressMonitor, communicationChannel, workingarea=None):
         self.progressMonitor = progressMonitor
         self.communicationChannel = communicationChannel
+        self.workingarea = workingarea
 
     def __repr__(self):
         return '{}(progressMonitor={!r}, communicationChannel={!r}'.format(
@@ -62,19 +63,19 @@ def build_parallel_dropbox(parallel_mode, quiet, user_modules,
         dispatcher = alphatwirl.concurrently.HTCondorJobSubmitter(job_desc_extra=htcondor_job_desc_extra)
     else:
         dispatcher = alphatwirl.concurrently.SubprocessRunner()
-    workingArea = alphatwirl.concurrently.WorkingArea(
+    workingarea = alphatwirl.concurrently.WorkingArea(
         dir=tmpdir,
         python_modules=list(user_modules)
     )
     dropbox = alphatwirl.concurrently.TaskPackageDropbox(
-        workingArea=workingArea,
+        workingArea=workingarea,
         dispatcher=dispatcher,
         terminate_dispatcher_at_close=terminate_dispatcher_at_close
     )
     communicationChannel = alphatwirl.concurrently.CommunicationChannel(
         dropbox=dropbox
     )
-    return Parallel(progressMonitor, communicationChannel)
+    return Parallel(progressMonitor, communicationChannel, workingarea)
 
 ##__________________________________________________________________||
 def build_parallel_multiprocessing(quiet, processes):
