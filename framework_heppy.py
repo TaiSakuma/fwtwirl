@@ -3,6 +3,13 @@ import os
 import sys
 import logging
 
+import gzip
+
+try:
+   import cPickle as pickle
+except:
+   import pickle
+
 import alphatwirl
 
 ##__________________________________________________________________||
@@ -62,6 +69,8 @@ class FrameworkHeppy(object):
         self.max_events_per_process = max_events_per_process
         self.profile = profile
         self.profile_out_path = profile_out_path
+        self.parallel_mode = parallel_mode
+        self.keep_jobs_running_at_keyboardinterrupt = keep_jobs_running_at_keyboardinterrupt
 
     def run(self, components,
             reader_collector_pairs,
@@ -215,8 +224,14 @@ class FrameworkHeppy(object):
             componentNames=components,
             componentHasTheseFiles=[analyzerName]
         )
-        componentLoop = alphatwirl.heppyresult.ComponentLoop(heppyResult, component_readers)
 
+        if self.parallel_mode in ('subprocess', 'htcondor') and self.keep_jobs_running_at_keyboardinterrupt:
+            componentLoop = ResumableComponentLoop(
+                heppyResult, component_readers,
+                workingarea=self.parallel.workingarea
+            )
+        else:
+            componentLoop = alphatwirl.heppyresult.ComponentLoop(heppyResult, component_readers)
         return componentLoop
 
     def _run(self, componentLoop):
@@ -227,5 +242,24 @@ class FrameworkHeppy(object):
 
     def _end(self):
         self.parallel.end()
+
+##__________________________________________________________________||
+class ResumableComponentLoop(object):
+
+    def __init__(self, heppyResult, reader, workingarea):
+        self.reader = reader
+        self.heppyResult = heppyResult
+        self.workingarea = workingarea
+
+    def __call__(self):
+        self.reader.begin()
+        for component in self.heppyResult.components():
+            self.reader.read(component)
+
+        path = os.path.join(self.workingarea.path, 'reader.p.gz')
+        with gzip.open(path, 'wb') as f:
+            pickle.dump(self.reader, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+        return self.reader.end()
 
 ##__________________________________________________________________||
