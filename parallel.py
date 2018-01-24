@@ -36,7 +36,8 @@ def build_parallel(parallel_mode, quiet=True, processes=4, user_modules=[ ],
             parallel_mode=parallel_mode,
             quiet=quiet,
             user_modules=user_modules,
-            htcondor_job_desc_extra=htcondor_job_desc_extra
+            htcondor_job_desc_extra=htcondor_job_desc_extra,
+            terminate_dispatcher_at_close=terminate_dispatcher_at_close
         )
 
     if not parallel_mode == default_parallel_mode:
