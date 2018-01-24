@@ -12,6 +12,10 @@ except:
 
 import alphatwirl
 
+from .yes_no import query_yes_no
+
+print query_yes_no
+
 ##__________________________________________________________________||
 import logging
 logger = logging.getLogger(__name__)
@@ -50,8 +54,7 @@ class FrameworkHeppy(object):
                  process=8,
                  user_modules=(),
                  max_events_per_dataset=-1, max_events_per_process=-1,
-                 profile=False, profile_out_path=None,
-                 keep_jobs_running_at_keyboardinterrupt=False
+                 profile=False, profile_out_path=None
     ):
         self.parallel = build_parallel(
             parallel_mode=parallel_mode,
@@ -69,7 +72,6 @@ class FrameworkHeppy(object):
         self.profile = profile
         self.profile_out_path = profile_out_path
         self.parallel_mode = parallel_mode
-        self.keep_jobs_running_at_keyboardinterrupt = keep_jobs_running_at_keyboardinterrupt
 
     def run(self, components,
             reader_collector_pairs,
@@ -85,8 +87,11 @@ class FrameworkHeppy(object):
         except KeyboardInterrupt:
             logger = logging.getLogger(__name__)
             logger.warning('received KeyboardInterrupt')
-            if not self.keep_jobs_running_at_keyboardinterrupt:
+            if query_yes_no('terminate running jobs'):
+               logger.warning('terminating running jobs')
                self.parallel.terminate()
+            else:
+               logger.warning('not terminating running jobs')
         self.parallel.end()
 
     def _configure(self, components, reader_collector_pairs, analyzerName, fileName, treeName):
