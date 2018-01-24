@@ -58,8 +58,7 @@ class FrameworkHeppy(object):
             quiet=quiet,
             processes=process,
             user_modules=user_modules,
-            htcondor_job_desc_extra=htcondor_job_desc_extra,
-            terminate_dispatcher_at_close=not keep_jobs_running_at_keyboardinterrupt
+            htcondor_job_desc_extra=htcondor_job_desc_extra
         )
         self.outdir = outdir
         self.heppydir = heppydir
@@ -86,7 +85,8 @@ class FrameworkHeppy(object):
         except KeyboardInterrupt:
             logger = logging.getLogger(__name__)
             logger.warning('received KeyboardInterrupt')
-            pass
+            if not self.keep_jobs_running_at_keyboardinterrupt:
+               self.parallel.terminate()
         self._end()
 
     def _begin(self):
@@ -225,7 +225,7 @@ class FrameworkHeppy(object):
             componentHasTheseFiles=[analyzerName]
         )
 
-        if self.parallel_mode in ('subprocess', 'htcondor') and self.keep_jobs_running_at_keyboardinterrupt:
+        if self.parallel_mode in ('subprocess', 'htcondor'):
             componentLoop = ResumableComponentLoop(
                 heppyResult, component_readers,
                 workingarea=self.parallel.workingarea
