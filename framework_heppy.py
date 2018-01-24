@@ -78,7 +78,7 @@ class FrameworkHeppy(object):
             treeName='tree'
     ):
 
-        self._begin()
+        self.parallel.begin()
         try:
             loop = self._configure(components, reader_collector_pairs, analyzerName, fileName, treeName)
             self._run(loop)
@@ -87,10 +87,7 @@ class FrameworkHeppy(object):
             logger.warning('received KeyboardInterrupt')
             if not self.keep_jobs_running_at_keyboardinterrupt:
                self.parallel.terminate()
-        self._end()
-
-    def _begin(self):
-        self.parallel.begin()
+        self.parallel.end()
 
     def _configure(self, components, reader_collector_pairs, analyzerName, fileName, treeName):
 
@@ -239,9 +236,6 @@ class FrameworkHeppy(object):
             componentLoop()
         else:
             profile_func(func=componentLoop, profile_out_path=self.profile_out_path)
-
-    def _end(self):
-        self.parallel.end()
 
 ##__________________________________________________________________||
 class ResumableComponentLoop(object):
