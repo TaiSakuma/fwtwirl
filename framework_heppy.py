@@ -14,8 +14,6 @@ import alphatwirl
 
 from .yes_no import query_yes_no
 
-print query_yes_no
-
 ##__________________________________________________________________||
 import logging
 logger = logging.getLogger(__name__)
