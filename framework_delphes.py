@@ -101,7 +101,7 @@ class FrameworkDelphes(object):
                 workingarea=self.parallel.workingarea
             )
         else:
-            loop = DatasetLoop(datasets=datasets, reader=eventReader)
+            loop = alphatwirl.datasetloop.DatasetLoop(datasets=datasets, reader=eventReader)
 
         return loop
 
@@ -110,19 +110,6 @@ class FrameworkDelphes(object):
             loop()
         else:
             profile_func(func=loop, profile_out_path=self.profile_out_path)
-
-##__________________________________________________________________||
-class DatasetLoop(object):
-
-    def __init__(self, datasets, reader):
-        self.datasets = datasets
-        self.reader = reader
-
-    def __call__(self):
-        self.reader.begin()
-        for dataset in self.datasets:
-            self.reader.read(dataset)
-        return self.reader.end()
 
 ##__________________________________________________________________||
 class ResumableDatasetLoop(object):
