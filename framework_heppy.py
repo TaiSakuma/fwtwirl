@@ -205,7 +205,7 @@ class FrameworkHeppy(object):
             treeName=treeName,
         )
         datasetIntoEventBuildersSplitter = alphatwirl.loop.DatasetIntoEventBuildersSplitter(
-            EventBuilder=alphatwirl.heppyresult.EventBuilder,
+            EventBuilder=alphatwirl.roottree.BEventBuilder,
             eventBuilderConfigMaker=eventBuilderConfigMaker,
             maxEvents=self.max_events_per_dataset,
             maxEventsPerRun=self.max_events_per_process
