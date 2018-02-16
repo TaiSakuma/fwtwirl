@@ -96,7 +96,7 @@ class FrameworkDelphes(object):
         )
 
         if self.parallel_mode in ('subprocess', 'htcondor'):
-            loop = ResumableDatasetLoop(
+            loop = alphatwirl.datasetloop.ResumableDatasetLoop(
                 datasets=datasets, reader=eventReader,
                 workingarea=self.parallel.workingarea
             )
@@ -110,24 +110,5 @@ class FrameworkDelphes(object):
             loop()
         else:
             profile_func(func=loop, profile_out_path=self.profile_out_path)
-
-##__________________________________________________________________||
-class ResumableDatasetLoop(object):
-
-    def __init__(self, datasets, reader, workingarea):
-        self.datasets = datasets
-        self.reader = reader
-        self.workingarea = workingarea
-
-    def __call__(self):
-        self.reader.begin()
-        for dataset in self.datasets:
-            self.reader.read(dataset)
-
-        path = os.path.join(self.workingarea.path, 'reader.p.gz')
-        with gzip.open(path, 'wb') as f:
-            pickle.dump(self.reader, f, protocol=pickle.HIGHEST_PROTOCOL)
-
-        return self.reader.end()
 
 ##__________________________________________________________________||
