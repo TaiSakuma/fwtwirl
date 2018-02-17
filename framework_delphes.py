@@ -23,7 +23,6 @@ log_handler.setFormatter(log_formatter)
 logger.addHandler(log_handler)
 
 ##__________________________________________________________________||
-from parallel import build_parallel
 from profile_func import profile_func
 
 ##__________________________________________________________________||
@@ -42,7 +41,7 @@ class FrameworkDelphes(object):
                  profile_out_path=None
     ):
         user_modules = set(user_modules)
-        self.parallel = build_parallel(
+        self.parallel = alphatwirl.parallel.build_parallel(
             parallel_mode=parallel_mode,
             quiet=quiet,
             processes=process,

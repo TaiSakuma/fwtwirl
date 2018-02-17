@@ -23,7 +23,6 @@ log_handler.setFormatter(log_formatter)
 logger.addHandler(log_handler)
 
 ##__________________________________________________________________||
-from parallel import build_parallel
 from profile_func import profile_func
 
 ##__________________________________________________________________||
@@ -54,7 +53,7 @@ class FrameworkHeppy(object):
                  max_events_per_dataset=-1, max_events_per_process=-1,
                  profile=False, profile_out_path=None
     ):
-        self.parallel = build_parallel(
+        self.parallel = alphatwirl.parallel.build_parallel(
             parallel_mode=parallel_mode,
             quiet=quiet,
             processes=process,
