@@ -231,7 +231,10 @@ class FrameworkHeppy(object):
                 workingarea=self.parallel.workingarea
             )
         else:
-            componentLoop = alphatwirl.heppyresult.ComponentLoop(heppyResult, component_readers)
+            componentLoop= alphatwirl.datasetloop.DatasetLoop(
+               datasets=heppyResult.components(),
+               reader=eventReader
+            )
         return componentLoop
 
     def _run(self, componentLoop):
