@@ -226,9 +226,10 @@ class FrameworkHeppy(object):
         )
 
         if self.parallel_mode in ('subprocess', 'htcondor'):
-            componentLoop = ResumableComponentLoop(
-                heppyResult, component_readers,
-                workingarea=self.parallel.workingarea
+            componentLoop = alphatwirl.datasetloop.ResumableDatasetLoop(
+               datasets=heppyResult.components(),
+               reader=eventReader,
+               workingarea=self.parallel.workingarea
             )
         else:
             componentLoop= alphatwirl.datasetloop.DatasetLoop(
@@ -242,24 +243,5 @@ class FrameworkHeppy(object):
             componentLoop()
         else:
             profile_func(func=componentLoop, profile_out_path=self.profile_out_path)
-
-##__________________________________________________________________||
-class ResumableComponentLoop(object):
-
-    def __init__(self, heppyResult, reader, workingarea):
-        self.reader = reader
-        self.heppyResult = heppyResult
-        self.workingarea = workingarea
-
-    def __call__(self):
-        self.reader.begin()
-        for component in self.heppyResult.components():
-            self.reader.read(component)
-
-        path = os.path.join(self.workingarea.path, 'reader.p.gz')
-        with gzip.open(path, 'wb') as f:
-            pickle.dump(self.reader, f, protocol=pickle.HIGHEST_PROTOCOL)
-
-        return self.reader.end()
 
 ##__________________________________________________________________||
