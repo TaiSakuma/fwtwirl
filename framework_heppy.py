@@ -227,13 +227,13 @@ class FrameworkHeppy(object):
         if self.parallel_mode in ('subprocess', 'htcondor'):
             componentLoop = alphatwirl.datasetloop.ResumableDatasetLoop(
                datasets=heppyResult.components(),
-               reader=eventReader,
+               reader=component_readers,
                workingarea=self.parallel.workingarea
             )
         else:
             componentLoop= alphatwirl.datasetloop.DatasetLoop(
                datasets=heppyResult.components(),
-               reader=eventReader
+               reader=component_readers
             )
         return componentLoop
 
