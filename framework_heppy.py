@@ -93,8 +93,7 @@ class FrameworkHeppy(object):
 
     def _configure(self, components, reader_collector_pairs, analyzerName, fileName, treeName):
 
-        component_readers = alphatwirl.heppyresult.ComponentReaderComposite()
-
+        component_readers = alphatwirl.datasetloop.DatasetReaderComposite()
 
         # tbl_heppyresult.txt
         tbl_heppyresult_path = os.path.join(self.outdir, 'tbl_heppyresult.txt')
