@@ -240,6 +240,9 @@ class FrameworkHeppy(object):
         if not self.profile:
             componentLoop()
         else:
-            profile_func(func=componentLoop, profile_out_path=self.profile_out_path)
+            alphatwirl.misc.print_profile_func(
+               func=componentLoop,
+               profile_out_path=self.profile_out_path
+            )
 
 ##__________________________________________________________________||

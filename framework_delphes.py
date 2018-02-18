@@ -108,6 +108,9 @@ class FrameworkDelphes(object):
         if not self.profile:
             loop()
         else:
-            profile_func(func=loop, profile_out_path=self.profile_out_path)
+            alphatwirl.misc.print_profile_func(
+               func=loop,
+               profile_out_path=self.profile_out_path
+            )
 
 ##__________________________________________________________________||
