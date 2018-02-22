@@ -192,7 +192,7 @@ class FrameworkHeppy(object):
 
         # event loop
         reader = alphatwirl.loop.ReaderComposite()
-        collector = alphatwirl.loop.CollectorComposite(self.parallel.progressMonitor.createReporter())
+        collector = alphatwirl.loop.CollectorComposite()
         for r, c in reader_collector_pairs:
             reader.add(r)
             collector.add(c)

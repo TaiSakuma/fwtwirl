@@ -73,7 +73,7 @@ class FrameworkDelphes(object):
 
     def _configure(self, datasets, reader_collector_pairs):
         reader_top = alphatwirl.loop.ReaderComposite()
-        collector_top = alphatwirl.loop.CollectorComposite(self.parallel.progressMonitor.createReporter())
+        collector_top = alphatwirl.loop.CollectorComposite()
         for r, c in reader_collector_pairs:
             reader_top.add(r)
             collector_top.add(c)
