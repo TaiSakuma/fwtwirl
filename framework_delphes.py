@@ -32,7 +32,7 @@ class FrameworkDelphes(object):
                  parallel_mode='multiprocessing',
                  htcondor_job_desc_extra=[ ],
                  process=8,
-                 user_modules=(),
+                 user_modules=set(),
                  max_events_per_dataset=-1,
                  max_events_per_process=-1,
                  max_files_per_dataset=-1,
@@ -41,6 +41,7 @@ class FrameworkDelphes(object):
                  profile_out_path=None
     ):
         user_modules = set(user_modules)
+        user_modules.add('fwtwirl')
         self.parallel = alphatwirl.parallel.build_parallel(
             parallel_mode=parallel_mode,
             quiet=quiet,
