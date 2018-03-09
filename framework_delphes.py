@@ -26,6 +26,8 @@ logger.addHandler(log_handler)
 from profile_func import profile_func
 
 ##__________________________________________________________________||
+from alphatwirl.misc.deprecation import atdeprecated
+@atdeprecated(msg='moved to https://github.com/alphatwirl/atdelphes as AtDelphes.')
 class FrameworkDelphes(object):
     def __init__(self,
                  quiet=False,
